@@ -72,7 +72,6 @@ set -- "${POSITIONAL_ARGS[@]}" # restore positional parameters
 if [ ! -f "$MODE_FILE" ]; then
 	cat << EOF > $MODE_FILE
 # PATH_VARIABLE_MODE: by setting all paths to the \$PATH variable"
-# SYMBOLIC_LINK_MODE: with symbolic link
 MODE=PATH_VARIABLE_MODE
 EOF
 fi
@@ -102,7 +101,7 @@ do
 			type_package=`echo $package | cut -d "/" -f2`
 			bin_path=`find $package -iname "bin" -type d | awk '(NR == 1 || length < length(shortest)) { shortest = $0 } END { print shortest }'`
 			# In case there is no bin folder, the folder is where the bins are located
-			if [ -z "$variable" ]; then
+			if [ -z "$bin_path" ]; then
 				bin_path=$package
 			fi 
 
@@ -119,6 +118,11 @@ do
 						echo "New Config file:"
 						echo ""
 						cat $CONFIG_FILE
+					;;
+					*)
+						echo "Unknown MODE $MODE"
+						help
+						exit 1
 					;;
 				esac
 			fi	
